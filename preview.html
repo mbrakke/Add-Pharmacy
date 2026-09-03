@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage my refills — prototype preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700&family=Neuton:wght@400&display=swap" rel="stylesheet">
+<style>
+/* ===========================================================
+   Manage my refills — prototype styles
+   Built on the Substrate (Virta Health) design token set.
+   =========================================================== */
+
+:root {
+  --font-body: 'Figtree', system-ui, sans-serif;
+  /* Confirmed via Figma get_design_context on the real file (Rm557hnysr7s1lHeKH8kCV):
+     the display/decorative font is "Neuton" — a real Google Font — not "Neutron". */
+  --font-display: 'Neuton', Georgia, 'Times New Roman', serif;
+
+  --font-size-body-medium: 16px;
+  --font-size-body-small: 14px;
+  --line-height-body-medium: 24px;
+  --line-height-body-small: 20px;
+  --font-weight-bold: 700;
+  --font-weight-semibold: 600;
+  --font-weight-regular: 400;
+
+  --space-none: 0px;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+
+  --radius-b: 8px;
+  --radius-card: 12px;
+  --radius-pill: 999px;
+  --border-thin: 1px;
+
+  --color-background-primary: #ffffff;
+  --color-background-app: #ffffff;
+  --color-background-subtle: #f1f6fe;
+  --color-border: #d8dde6;
+  --color-text-primary: #0c1422;
+  --color-text-secondary: #627493;
+  --color-text-muted: #8a94a6;
+
+  --color-primary: #0563f0;
+  --color-primary-hover: #044fc4;
+  --color-primary-tint: #ccdefa;
+
+  --color-info: #0563f0;
+  --color-success: #1D9E75;
+  --color-success-tint: #e8f7f0;
+  --color-warning: #BA7517;
+  --color-error: #E24B4A;
+
+  --elevation-1: 0px 4px 24px 0px rgba(12, 20, 34, 0.12);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #e8ebf0;
+  font-family: var(--font-body);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Phone frame ----------
+   Fixed 390x844 canvas (iPhone 14/13/12 ratio) so every screen renders at
+   the exact same size regardless of the browser window or device it's
+   viewed in. Content scrolls inside the frame; the frame itself doesn't
+   resize. */
+body {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 24px 0;
+}
+
+.screen {
+  width: 390px;
+  height: 844px;
+  flex: none;
+  margin: 0 auto;
+  background: var(--color-background-primary);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  border-radius: 32px;
+  box-shadow: var(--elevation-1);
+  overflow: hidden;
+}
+
+/* ---------- Nav bar ---------- */
+.nav-bar {
+  display: flex;
+  align-items: center;
+  padding: 18px var(--space-lg) 12px;
+  position: relative;
+  flex-shrink: 0;
+}
+.nav-back {
+  width: 40px;
+  height: 40px;
+  margin: -8px 0 -8px -8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-primary);
+  text-decoration: none;
+  font-size: 20px;
+  border-radius: 50%;
+}
+.nav-back:hover { background: var(--color-background-subtle); }
+.nav-title {
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: center;
+  pointer-events: none;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.1px;
+}
+
+/* ---------- Content ---------- */
+.content {
+  flex: 1;
+  min-height: 0;
+  padding: 0 var(--space-lg) var(--space-xl);
+  overflow-y: auto;
+}
+
+h1.page-title {
+  font-family: var(--font-display);
+  font-size: 28px;
+  line-height: 36px;
+  font-weight: var(--font-weight-regular);
+  margin: var(--space-lg) 0 var(--space-sm);
+  letter-spacing: -0.2px;
+}
+p.page-subtitle {
+  font-size: var(--font-size-body-medium);
+  line-height: var(--line-height-body-medium);
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-xl);
+}
+h2.section-title {
+  font-size: var(--font-size-body-medium);
+  font-weight: var(--font-weight-semibold);
+  margin: 0 0 var(--space-md);
+}
+
+/* ---------- Illustration banner ---------- */
+.illustration {
+  width: 100%;
+  border-radius: var(--radius-card);
+  display: block;
+  margin-top: var(--space-sm);
+}
+
+/* ---------- Cards ---------- */
+.card {
+  border: var(--border-thin) solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-lg);
+}
+
+.rx-card .rx-row {
+  display: flex;
+  gap: var(--space-md);
+  align-items: flex-start;
+}
+.rx-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-card);
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.rx-icon img { width: 100%; height: 100%; display: block; object-fit: contain; }
+.rx-status {
+  font-size: var(--font-size-body-small);
+  color: var(--color-text-secondary);
+  margin: 0 0 2px;
+}
+.rx-status.status-review { color: var(--color-warning); font-weight: var(--font-weight-bold); }
+.rx-name {
+  font-family: var(--font-body);
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: var(--font-weight-semibold);
+  margin: 0 0 2px;
+}
+.rx-detail {
+  font-size: var(--font-size-body-small);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+.rx-divider {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: var(--space-md) 0;
+}
+.rx-meta-label {
+  font-size: var(--font-size-body-small);
+  color: var(--color-text-secondary);
+  margin: 0 0 2px;
+}
+.rx-meta-value {
+  font-size: var(--font-size-body-small);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+.rx-meta-value.is-link { color: var(--color-primary); }
+.rx-pharmacy-block { margin-top: var(--space-md); }
+.rx-pharmacy-block address {
+  font-style: normal;
+  font-size: var(--font-size-body-small);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+/* ---------- Requirement tiles ---------- */
+.req-title {
+  font-weight: var(--font-weight-semibold);
+  margin: 0 0 var(--space-sm);
+}
+.req-copy {
+  font-size: var(--font-size-body-small);
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-lg);
+}
+.req-copy.is-complete { color: var(--color-text-primary); }
+.req-grid {
+  display: flex;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+.req-tile {
+  flex: 1;
+  border: var(--border-thin) solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-lg);
+}
+.req-tile-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 28px;
+}
+.req-tile-top span { font-weight: var(--font-weight-semibold); font-size: var(--font-size-body-small); line-height: 1.35; }
+.req-badge {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--color-primary);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0;
+}
+.req-progress {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.req-count { font-size: var(--font-size-body-small); color: var(--color-text-secondary); }
+.req-ring {
+  width: 34px; height: 34px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+}
+.req-ring img { width: 16px; height: 16px; display: block; }
+.req-ring.gold { background: #fdf3d9; border: 2px solid #e8b33d; }
+.req-ring.orange { background: #fde8d9; border: 2px solid #e07a2f; }
+
+.info-box {
+  background: var(--color-background-subtle);
+  border-radius: var(--radius-card);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+.info-box strong { display: block; margin-bottom: 4px; font-size: var(--font-size-body-medium); }
+.info-box p { margin: 0; font-size: var(--font-size-body-small); color: var(--color-text-secondary); }
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 14px 24px;
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: var(--font-weight-semibold);
+  border-radius: var(--radius-b);
+  border: var(--border-thin) solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+}
+.btn-primary { background: var(--color-primary); color: #fff; }
+.btn-primary:hover:not(:disabled) { background: var(--color-primary-hover); }
+.btn-primary:disabled, .btn-primary.is-disabled {
+  background: #e2e8f0; color: #a0aab8; cursor: not-allowed;
+  pointer-events: none;
+}
+.btn-secondary { background: #fff; color: var(--color-primary); border-color: var(--color-primary); }
+.btn-secondary:hover { background: var(--color-primary-tint); }
+.btn-row { display: flex; gap: var(--space-md); }
+.btn-row .btn { flex: 1; padding-left: var(--space-md); padding-right: var(--space-md); font-size: var(--font-size-body-medium); line-height: var(--line-height-body-medium); white-space: nowrap; }
+
+.sticky-footer {
+  padding: var(--space-lg);
+  border-top: 1px solid var(--color-border);
+  flex-shrink: 0;
+  background: #fff;
+}
+
+/* ---------- Pharmacy list items ---------- */
+.pharmacy-list { display: flex; flex-direction: column; gap: var(--space-md); }
+.pharmacy-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-lg);
+  background: #fff;
+  cursor: pointer;
+  font-family: var(--font-body);
+}
+.pharmacy-item.is-selected { border-color: var(--color-primary); }
+.pharmacy-row { display: flex; gap: var(--space-md); align-items: flex-start; }
+.radio {
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 1.5px solid #c4cad4;
+  flex-shrink: 0; margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+}
+.radio.is-selected { border-color: var(--color-primary); }
+.radio.is-selected::after {
+  content: ''; width: 11px; height: 11px; border-radius: 50%; background: var(--color-primary);
+}
+.pharmacy-name { font-weight: var(--font-weight-semibold); font-size: var(--font-size-body-medium); margin: 0 0 4px; }
+.pharmacy-address { font-size: var(--font-size-body-small); color: var(--color-text-secondary); margin: 0; line-height: 1.5; }
+.pharmacy-phone { font-size: var(--font-size-body-small); color: var(--color-text-secondary); margin: var(--space-sm) 0 0; }
+.pharmacy-remove {
+  margin-top: var(--space-md);
+  text-align: right;
+}
+.pharmacy-remove button {
+  background: none; border: none; color: var(--color-error);
+  font-size: var(--font-size-body-small); font-weight: var(--font-weight-bold);
+  cursor: pointer; padding: 0; font-family: var(--font-body);
+}
+
+/* ---------- Search ---------- */
+.search-box {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid var(--color-primary);
+  border-radius: var(--radius-b);
+  padding: 4px 4px 4px var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+.search-box input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-family: var(--font-body);
+  font-size: var(--font-size-body-medium);
+  padding: 10px 0;
+  background: transparent;
+  color: var(--color-text-primary);
+}
+.search-box input::placeholder { color: var(--color-text-muted); }
+.search-submit {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--color-primary); border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0;
+}
+.search-submit img { width: 18px; height: 18px; filter: brightness(0) invert(1); }
+
+.chip-row { display: flex; gap: var(--space-sm); margin-bottom: var(--space-xl); flex-wrap: wrap; }
+.chip {
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  padding: 8px 18px;
+  font-size: var(--font-size-body-small);
+  font-weight: var(--font-weight-semibold);
+  background: #fff;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  font-family: var(--font-body);
+}
+.chip.is-active { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
+
+.results-heading {
+  font-size: var(--font-size-body-small);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-md);
+}
+.results-heading.section-gap { margin-top: var(--space-xl); }
+
+.search-empty {
+  text-align: center;
+  padding: 60px var(--space-lg) 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body-small);
+}
+
+.manual-add {
+  text-align: center;
+  padding: var(--space-xl) 0 var(--space-md);
+  border-top: 1px solid var(--color-border);
+  margin-top: var(--space-lg);
+}
+.manual-add p { font-size: var(--font-size-body-small); color: var(--color-text-secondary); margin: 0 0 6px; }
+.manual-add a {
+  color: var(--color-primary); font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-body-small); text-decoration: none;
+  background: none; border: none; cursor: pointer; font-family: var(--font-body);
+}
+
+/* ---------- Manual pharmacy entry form ---------- */
+.form-field { margin-bottom: var(--space-xl); }
+.form-label {
+  display: block;
+  font-size: var(--font-size-body-medium);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-sm);
+}
+.form-input {
+  width: 100%;
+  padding: 12px 14px;
+  font-family: var(--font-body);
+  font-size: var(--font-size-body-medium);
+  color: var(--color-text-primary);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-b);
+  background: #fff;
+  box-sizing: border-box;
+}
+.form-input::placeholder { color: var(--color-text-muted); }
+.form-input:focus { outline: none; border-color: var(--color-primary); }
+.form-select-wrap { position: relative; }
+.form-select {
+  width: 100%;
+  padding: 12px 40px 12px 14px;
+  font-family: var(--font-body);
+  font-size: var(--font-size-body-medium);
+  color: var(--color-text-primary);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-b);
+  background: #fff;
+  box-sizing: border-box;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.form-select:focus { outline: none; border-color: var(--color-primary); }
+.form-select-wrap::after {
+  content: '';
+  position: absolute;
+  right: 16px; top: 50%;
+  width: 9px; height: 9px;
+  border-right: 1.5px solid var(--color-text-secondary);
+  border-bottom: 1.5px solid var(--color-text-secondary);
+  transform: translateY(-65%) rotate(45deg);
+  pointer-events: none;
+}
+.form-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-lg);
+}
+.form-checkbox-row input[type="checkbox"] {
+  width: 20px; height: 20px; flex-shrink: 0;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+.form-checkbox-row label { font-size: var(--font-size-body-medium); cursor: pointer; }
+
+/* ---------- Numbered steps (confirm request) ---------- */
+.step-list { display: flex; flex-direction: column; gap: var(--space-lg); margin-bottom: var(--space-xl); }
+.step-item { display: flex; align-items: flex-start; gap: var(--space-md); }
+.step-badge {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: #fdf3d9; color: #8a5c10;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: var(--font-weight-bold); flex-shrink: 0;
+}
+.step-copy { font-size: var(--font-size-body-medium); line-height: var(--line-height-body-medium); margin: 0; }
+.step-copy strong { font-weight: var(--font-weight-bold); }
+
+.spacer { flex: 1; }
+
+/* ---------- Notification banner ---------- */
+.notification {
+  display: flex; align-items: flex-start; gap: 8px;
+  background: #ffffff; border: 1px solid var(--color-border);
+  border-radius: 8px; padding: 12px 16px;
+  box-shadow: var(--elevation-1);
+  margin: var(--space-lg) var(--space-lg) 0;
+}
+.notification__icon {
+  width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; color: #fff; margin-top: 2px;
+  background: var(--color-success);
+}
+.notification__body { flex: 1; }
+.notification__title { font-size: 16px; font-weight: 700; line-height: 24px; color: #0c1422; margin: 0; }
+.notification__desc  { font-size: 14px; font-weight: 400; line-height: 20px; color: #4a5568; margin: 2px 0 0; }
+.notification__close {
+  background: none; border: none; cursor: pointer;
+  color: #4a5568; width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 4px; flex-shrink: 0; font-size: 14px;
+}
+.notification__close:hover { background: #f1f5f9; }
+
+.beta-tag {
+  display: inline-block;
+  background: var(--color-primary-tint);
+  color: var(--color-primary);
+  font-size: 12px;
+  font-weight: var(--font-weight-bold);
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.proto-reset {
+  text-align: center;
+  padding: var(--space-lg) 0 0;
+}
+.proto-reset button {
+  background: none; border: none; color: var(--color-text-muted);
+  font-size: 12px; text-decoration: underline; cursor: pointer; font-family: var(--font-body);
+}
+
+/* ===========================================================
+   Typography note: the decorative/display font is Neuton, a
+   real Google Font (confirmed via Figma get_design_context on
+   the source file). It's loaded directly via the <link> tag in
+   each HTML file's <head> — no self-hosting needed.
+   =========================================================== */
+
+/* preview-only additions */
+.view { display: none; flex-direction: column; flex: 1; min-height: 0; }
+.view.is-active { display: flex; }
+.preview-badge {
+  position: fixed; top: 8px; right: 8px; z-index: 50;
+  background: #0c1422; color: #fff; font-size: 11px; font-family: 'Figtree', sans-serif;
+  padding: 4px 9px; border-radius: 999px; opacity: 0.55; pointer-events: none;
+}
+</style>
+</head>
+<body>
+<div class="preview-badge">In-chat preview</div>
+<div class="screen" id="screen">
+
+  <!-- ============ VIEW 1: Overview ============ -->
+  <div class="view is-active" id="view-overview">
+    <div class="nav-bar">
+      <a class="nav-back" href="#" aria-label="Back">&#8249;</a>
+      <span class="nav-title">Prescriptions</span>
+    </div>
+    <div id="banner-slot"></div>
+    <div class="content">
+      <img class="illustration" src="data:image/png;base64,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" alt="">
+      <h1 class="page-title" id="page-title">Prescriptions</h1>
+      <p class="page-subtitle" id="page-subtitle">Requests open 3 weeks after your last refill. You must also complete the tasks below to qualify.</p>
+
+      <h2 class="section-title">My prescription</h2>
+      <div class="card rx-card">
+        <div class="rx-row">
+          <div class="rx-icon"><img src="data:image/png;base64,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" alt=""></div>
+          <div style="flex:1">
+            <p class="rx-status" id="rx-status">Upcoming</p>
+            <p class="rx-name">Zepbound (tirzepatide)</p>
+            <p class="rx-detail" id="rx-dose">2.5 mg, injected weekly on Monday</p>
+          </div>
+        </div>
+        <hr class="rx-divider">
+        <div id="rx-lower">
+          <p class="rx-meta-label">Last sent to pharmacy</p>
+          <p class="rx-meta-value">Tue, Apr 21</p>
+          <p class="rx-meta-label" style="margin-top:12px;">Next refill: Tue, May 12</p>
+          <p class="rx-meta-value">Available now</p>
+        </div>
+      </div>
+
+      <div id="requirements-block">
+        <h2 class="section-title">Refill requirements</h2>
+        <p class="req-copy is-complete">Your requirements are complete. You can now request your refill.</p>
+        <div class="req-grid">
+          <div class="req-tile">
+            <div class="req-tile-top"><span>Weight via<br>Virta scale</span></div>
+            <div class="req-progress"><span class="req-count">4/4<br>weekly</span><span class="req-ring gold"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzEzNDM1XzEwODEpIj4KPHBhdGggZD0iTTIwLjIxMjggMEMyMi4zNjExIDAgMjQuMDkyNSAxLjc3MzM3IDIzLjk5NiAzLjkxNjk5TDIzLjI1MzggMjAuNDE3QzIzLjE2MzMgMjIuNDI5MSAyMS40ODg0IDI0IDE5LjQ3MDYgMjRINC41MjkyM0MyLjUxMTQ5IDI0IDAuODM2NTk3IDIyLjQyOTEgMC43NDYwMyAyMC40MTdMMC4wMDM4NDI2OCAzLjkxNjk5Qy0wLjA5MjU5NzMgMS43NzMzNyAxLjYzODc1IDAgMy43ODcwNSAwSDIwLjIxMjhaTTMuNzg3MDUgMS41QzIuNDc1MTggMS41IDEuNDQ0NyAyLjU3ODM0IDEuNTAxODkgMy44NDk2MUwyLjI0NDA4IDIwLjM0OTZDMi4yOTc4OCAyMS41NDQzIDMuMjk3NTggMjIuNSA0LjUyOTIzIDIyLjVIMTkuNDcwNkMyMC43MDIzIDIyLjUgMjEuNzAyIDIxLjU0NDMgMjEuNzU1OCAyMC4zNDk2TDIyLjQ5OCAzLjg0OTYxQzIyLjU1NTIgMi41NzgzNCAyMS41MjQ3IDEuNSAyMC4yMTI4IDEuNUgzLjc4NzA1Wk0xMS45OTk5IDMuMjVDMTUuNDMxMSAzLjI1MDAxIDE4LjM0MzggNS4zOTg3IDE5LjYzMTggNy40MDgyQzE5Ljc4MDEgNy42Mzk2NCAxOS43ODk3IDcuOTMzOTkgMTkuNjU3MiA4LjE3NDhMMTcuOTAyMyAxMS4zNjEzQzE3Ljc3MDQgMTEuNjAwOCAxNy41MTg0IDExLjc1IDE3LjI0NTEgMTEuNzVINi43NTQ4MkM2LjQ4MTQzIDExLjc1IDYuMjI5NDYgMTEuNjAwOCA2LjA5NzU5IDExLjM2MTNMNC4zNDI3MSA4LjE3NDhDNC4yMTAxNSA3LjkzNCA0LjIxOTgxIDcuNjM5NjUgNC4zNjgxIDcuNDA4MkM1LjY1NjA1IDUuMzk4NzQgOC41Njg4NSAzLjI1IDExLjk5OTkgMy4yNVpNMTEuOTk5OSA0Ljc1QzkuMzY3NzMgNC43NSA3LjA0OTU0IDYuMzEyMjQgNS44ODE3NyA3Ljg2MDM1TDcuMTk4MTggMTAuMjVIMTAuODU4M0w5LjU4MDAxIDcuMjk3ODVDOS40MTU0NSA2LjkxNzc4IDkuNTg5NjMgNi40NzYxNSA5Ljk2OTY2IDYuMzExNTJDMTAuMzQ5OCA2LjE0NjkzIDEwLjc5MTQgNi4zMjIwNCAxMC45NTYgNi43MDIxNUwxMi40OTIxIDEwLjI1SDE2LjgwMTdMMTguMTE3MSA3Ljg2MDM1QzE2Ljk0OTIgNi4zMTIzOCAxNC42MzE5IDQuNzUwMDEgMTEuOTk5OSA0Ljc1WiIgZmlsbD0iIzBDMTQyMiIvPgo8L2c+CjxkZWZzPgo8Y2xpcFBhdGggaWQ9ImNsaXAwXzEzNDM1XzEwODEiPgo8cmVjdCB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIGZpbGw9IndoaXRlIi8+CjwvY2xpcFBhdGg+CjwvZGVmcz4KPC9zdmc+Cg==" alt=""></span></div>
+          </div>
+          <div class="req-tile">
+            <div class="req-tile-top"><span>GLP-1<br>medication</span><span class="req-badge">+</span></div>
+            <div class="req-progress"><span class="req-count">3/3<br>weekly</span><span class="req-ring orange"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzEyMzQ2XzExMDgpIj4KPHBhdGggZD0iTTkuMDkxNTUgMTUuMDI3N0M5LjM2NzIgMTQuNzU0MyA5LjgwMTg2IDE0LjczODYgMTAuMDk1NSAxNC45Nzk5TDEwLjE1MjEgMTUuMDMxNkwxMi42MDIzIDE3LjUwMTNDMTIuODk0IDE3Ljc5NTQgMTIuODkyNSAxOC4yNzEyIDEyLjU5ODQgMTguNTYyOUMxMi4zMjI3IDE4LjgzNjIgMTEuODg4MSAxOC44NTExIDExLjU5NDUgMTguNjA5N0wxMS41Mzc4IDE4LjU1OEw5LjA4NzY0IDE2LjA4ODNMOS4wMzU4OSAxNi4wMzA2QzguNzk3MTQgMTUuNzM1MiA4LjgxNjE0IDE1LjMwMTEgOS4wOTE1NSAxNS4wMjc3WiIgZmlsbD0iIzBDMTQyMiIvPgo8cGF0aCBkPSJNMTMuMDYyNSAxMC41NjY3QzEzLjM1NyAxMC4yNzU1IDEzLjgzMTggMTAuMjc4MSAxNC4xMjMxIDEwLjU3MjZMMTYuODEzNSAxMy4yOTIzTDE2Ljg2NDMgMTMuMzQ5OUMxNy4xMDI3IDEzLjY0NTcgMTcuMDgzNCAxNC4wNzk4IDE2LjgwNzYgMTQuMzUyOUMxNi41MTMxIDE0LjY0NDEgMTYuMDM3NCAxNC42NDE1IDE1Ljc0NjEgMTQuMzQ3TDEzLjA1NjcgMTEuNjI3M0MxMi43NjU0IDExLjMzMjggMTIuNzY4IDEwLjg1OCAxMy4wNjI1IDEwLjU2NjdaIiBmaWxsPSIjMEMxNDIyIi8+CjxwYXRoIGQ9Ik0xMy44NDExIDMuMzE5OTRDMTQuMDQwNSAzLjMyMDI3IDE0LjIzMTkgMy40MDAyMSAxNC4zNzI0IDMuNTQxNjJMMTcuNDEyNCA2LjYwMTE5TDIwLjQ2NzEgOS42MjY1OEMyMC42MDg4IDkuNzY2OTMgMjAuNjg5MiA5Ljk1ODM4IDIwLjY4OTggMTAuMTU3OEMyMC42OTAyIDEwLjM1NzQgMjAuNjExMSAxMC41NDkgMjAuNDcgMTAuNjkwMUw4LjkyOTk5IDIyLjIzMDFDOC42MzgxNyAyMi41MjE5IDguMTY1NjkgMjIuNTIzMyA3Ljg3MjM3IDIyLjIzM0w0LjgxMTgyIDE5LjIwMjhMNC44MDY5NCAxOS4xOTc5TDEuNzc2NjcgMTYuMTM3M0MxLjQ4NjYyIDE1Ljg0NDEgMS40ODgwNCAxNS4zNzE1IDEuNzc5NiAxNS4wNzk3TDEzLjMwODkgMy41Mzk2N0wxMy40MjQxIDMuNDQ1OTJDMTMuNTQ2NyAzLjM2NDI3IDEzLjY5MTcgMy4zMTk3MyAxMy44NDExIDMuMzE5OTRaTTMuMzY3NDkgMTUuNjExOUw1Ljg2NzQ5IDE4LjEzNzNMOC4zOTY3OCAyMC42NDEyTDE4Ljg3NjMgMTAuMTYxN0wxNi4zNTE5IDcuNjYyNzJMMTYuMzQ4IDcuNjU4ODFMMTMuODM4MiA1LjEzMjQ0TDMuMzY3NDkgMTUuNjExOVoiIGZpbGw9IiMwQzE0MjIiLz4KPHBhdGggZD0iTTExLjIzOTYgMS40MDk2N0MxMS41MTQyIDEuMTM1MjkgMTEuOTQ5IDEuMTE3NyAxMi4yNDM1IDEuMzU3OTFMMTIuMzAwMSAxLjQwOTY3TDIyLjU5MDIgMTEuNzA5NUMyMi44ODI5IDEyLjAwMjUgMjIuODgzMiAxMi40NzgzIDIyLjU5MDIgMTIuNzcxQzIyLjMxNTUgMTMuMDQ1MyAyMS44ODA3IDEzLjA2MiAyMS41ODYzIDEyLjgyMThMMjEuNTI5NiAxMi43N0wxMS4yMzk2IDIuNDcwMjJMMTEuMTg3OCAyLjQxMjZDMTAuOTQ4IDIuMTE4IDEwLjk2NTIgMS42ODQwNiAxMS4yMzk2IDEuNDA5NjdaIiBmaWxsPSIjMEMxNDIyIi8+CjxwYXRoIGQ9Ik0xNS42MTk2IDAuMjE5NjdDMTUuOTEyNSAtMC4wNzMyMjMzIDE2LjM4NzMgLTAuMDczMjIzMyAxNi42ODAxIDAuMjE5NjdMMjMuNzc5OCA3LjMxOTI4QzI0LjA3MjYgNy42MTIxNyAyNC4wNzI2IDguMDg2OTMgMjMuNzc5OCA4LjM3OTgzQzIzLjQ4NjkgOC42NzI3MiAyMy4wMTIxIDguNjcyNzIgMjIuNzE5MiA4LjM3OTgzTDE1LjYxOTYgMS4yODAyMkMxNS4zMjY3IDAuOTg3MzI0IDE1LjMyNjcgMC41MTI1NjMgMTUuNjE5NiAwLjIxOTY3WiIgZmlsbD0iIzBDMTQyMiIvPgo8cGF0aCBkPSJNMjEuNTA3IDUuMDM3MThDMjEuNzk5NyA1LjMzMDE4IDIxLjc5OTYgNS44MDUwNyAyMS41MDY2IDYuMDk3ODRMMTguNzE5MyA4Ljg4MzE3QzE4LjQyNjMgOS4xNzU2NCAxNy45NTE0IDkuMTc1NjQgMTcuNjU4NyA4Ljg4MjhMMTUuMTI4IDYuMzUwNDJDMTQuODM1NCA2LjA1NzUzIDE0LjgzNTcgNS41ODI1OCAxNS4xMjg0IDUuMjg5NzZMMTcuOTE1NyAyLjUwNDQzQzE4LjIwODcgMi4yMTE2NCAxOC42ODM2IDIuMjExODEgMTguOTc2NCAyLjUwNDhMMjEuNTA3IDUuMDM3MThaTTE2LjcxOTIgNS44MjA2NUwxOC4xODk1IDcuMjkyTDE5LjkxNTggNS41NjY5NkwxOC40NDU1IDQuMDk1NjFMMTYuNzE5MiA1LjgyMDY1WiIgZmlsbD0iIzBDMTQyMiIvPgo8cGF0aCBkPSJNNi45MTUgMTkuMTU3QzcuMjA3NjggMTkuNDUgNy4yMDc1OSAxOS45MjQ5IDYuOTE0NjMgMjAuMjE3NkwzLjc4ODE5IDIzLjM0MTlDMy40OTUyMyAyMy42MzQ3IDMuMDIwMzMgMjMuNjM0NCAyLjcyNzUzIDIzLjM0MTVMMC42NzA0NTQgMjEuMjgzQzAuMzc3NjYzIDIwLjk5IDAuMzc3ODI5IDIwLjUxNTIgMC42NzA4MjQgMjAuMjIyNEwzLjc5NzI3IDE3LjA5ODFDNC4wOTAyNyAxNi44MDUzIDQuNTY1MTQgMTYuODA1NSA0Ljg1NzkzIDE3LjA5ODVMNi45MTUgMTkuMTU3Wk0yLjI2MTYzIDIwLjc1MzNMMy4yNTg0MSAyMS43NTA3TDUuMzIzODMgMTkuNjg2OEw0LjMyNzA1IDE4LjY4OTNMMi4yNjE2MyAyMC43NTMzWiIgZmlsbD0iIzBDMTQyMiIvPgo8cGF0aCBkPSJNMS42OTMyMyAyMS4yNjU4QzEuOTg4MTMgMjAuOTc1IDIuNDYyOTQgMjAuOTc4NyAyLjc1Mzc4IDIxLjI3MzZDMy4wNDQ0OSAyMS41Njg1IDMuMDQxNzEgMjIuMDQzMyAyLjc0Njk0IDIyLjMzNDFMMS4yNzYyNCAyMy43ODQzQzAuOTgxMzE4IDI0LjA3NDggMC41MDY0NDkgMjQuMDcxMyAwLjIxNTY5MSAyMy43NzY1Qy0wLjA3NTAxMjYgMjMuNDgxNiAtMC4wNzEzMjkzIDIzLjAwNjggMC4yMjM1MDQgMjIuNzE2TDEuNjkzMjMgMjEuMjY1OFoiIGZpbGw9IiMwQzE0MjIiLz4KPC9nPgo8ZGVmcz4KPGNsaXBQYXRoIGlkPSJjbGlwMF8xMjM0Nl8xMTA4Ij4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSJ3aGl0ZSIvPgo8L2NsaXBQYXRoPgo8L2RlZnM+Cjwvc3ZnPgo=" alt=""></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Refill timing</strong>
+        <p id="timing-copy">Requests typically take 1&ndash;2 business days to reach your pharmacy.</p>
+      </div>
+    </div>
+    <div class="sticky-footer">
+      <button class="btn btn-primary" id="request-btn" type="button" onclick="goTo('confirm-pharmacy')">Request refill</button>
+    </div>
+    <div class="proto-reset">
+      <button type="button" onclick="if(confirm('Reset the prototype back to its starting state?')){resetPreview();}">Reset prototype</button>
+    </div>
+  </div>
+
+  <!-- ============ VIEW 2: Confirm pharmacy ============ -->
+  <div class="view" id="view-confirm-pharmacy">
+    <div class="nav-bar">
+      <a class="nav-back" href="#" onclick="goTo('overview');return false;" aria-label="Back">&#8249;</a>
+      <span class="nav-title">Request refill</span>
+    </div>
+    <div class="content">
+      <h1 class="page-title" style="font-size:22px; font-family:var(--font-body); font-weight:var(--font-weight-bold);">Confirm pharmacy</h1>
+      <p class="page-subtitle">This is where your refill will be sent.</p>
+      <h2 class="section-title">Select refill pharmacy</h2>
+      <div class="pharmacy-list" id="pharmacy-list"></div>
+    </div>
+    <div class="sticky-footer">
+      <div class="btn-row">
+        <button class="btn btn-secondary" type="button" onclick="goTo('add-pharmacy')">Add pharmacy</button>
+        <button class="btn btn-primary is-disabled" id="confirm-btn" type="button">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ VIEW 3: Add pharmacy (search) ============ -->
+  <div class="view" id="view-add-pharmacy">
+    <div class="nav-bar">
+      <a class="nav-back" href="#" onclick="goTo('confirm-pharmacy');return false;" aria-label="Back">&#8249;</a>
+      <span class="nav-title">Add pharmacy</span>
+    </div>
+    <div class="content">
+      <h2 class="section-title" style="font-size:20px;">Search pharmacies</h2>
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="Search name, address, or ZIP" autocomplete="off">
+        <button class="search-submit" id="search-btn" aria-label="Search"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzE0ODc1XzI4NTkpIj4KPHBhdGggZD0iTTE4LjEyNiA5LjgxMjAxQzE4LjEyNTcgNS4yMjExIDE0LjQwMzUgMS40OTk1MSA5LjgxMjUgMS40OTk1MUM1LjIyMTc0IDEuNDk5NzUgMS41MDAyMyA1LjIyMTI1IDEuNSA5LjgxMjAxQzEuNSAxNC40MDMgNS4yMjE1OSAxOC4xMjUzIDkuODEyNSAxOC4xMjU1QzE0LjQwMzYgMTguMTI1NSAxOC4xMjYgMTQuNDAzMSAxOC4xMjYgOS44MTIwMVpNMTkuNjI2IDkuODEyMDFDMTkuNjI2IDE1LjIzMTUgMTUuMjMyIDE5LjYyNTUgOS44MTI1IDE5LjYyNTVDNC4zOTMxNyAxOS42MjUzIDAgMTUuMjMxNCAwIDkuODEyMDFDMC4wMDAyMzM0NjkgNC4zOTI4MiA0LjM5MzMxIC0wLjAwMDI1NDgxNyA5LjgxMjUgLTAuMDAwNDg4MjgxQzE1LjIzMTkgLTAuMDAwNDg4MjgxIDE5LjYyNTcgNC4zOTI2OCAxOS42MjYgOS44MTIwMVoiIGZpbGw9IiMwQzE0MjIiLz4KPHBhdGggZD0iTTE1LjY5MDcgMTUuNjkwNEMxNS45ODM2IDE1LjM5NzYgMTYuNDU4NCAxNS4zOTc1IDE2Ljc1MTMgMTUuNjkwNEwyMy43ODA2IDIyLjcyMDdDMjQuMDczMSAyMy4wMTM2IDI0LjA3MzMgMjMuNDg4NSAyMy43ODA2IDIzLjc4MTJDMjMuNDg3OCAyNC4wNzQgMjMuMDEyOSAyNC4wNzM4IDIyLjcyIDIzLjc4MTJMMTUuNjkwNyAxNi43NTFDMTUuMzk3OSAxNi40NTgxIDE1LjM5NzggMTUuOTgzMyAxNS42OTA3IDE1LjY5MDRaIiBmaWxsPSIjMEMxNDIyIi8+CjwvZz4KPGRlZnM+CjxjbGlwUGF0aCBpZD0iY2xpcDBfMTQ4NzVfMjg1OSI+CjxyZWN0IHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0id2hpdGUiLz4KPC9jbGlwUGF0aD4KPC9kZWZzPgo8L3N2Zz4K" alt=""></button>
+      </div>
+      <div class="chip-row" id="chip-row" style="display:none;">
+        <button class="chip is-active" data-filter="all">All</button>
+        <button class="chip" data-filter="retail">Retail</button>
+        <button class="chip" data-filter="mail">Mail-order</button>
+      </div>
+      <div id="results"></div>
+      <div class="manual-add" id="manual-add" style="display:none;">
+        <p>Can&rsquo;t find your pharmacy?</p>
+        <p>Check your spelling or add it manually.</p>
+        <a href="#" id="add-manually-link" onclick="goTo('add-pharmacy-manual');return false;">Add Manually</a>
+      </div>
+    </div>
+    <div class="sticky-footer">
+      <button class="btn btn-primary is-disabled" id="save-btn" type="button">Save</button>
+    </div>
+  </div>
+
+  <!-- ============ VIEW 3b: Add pharmacy manually ============ -->
+  <div class="view" id="view-add-pharmacy-manual">
+    <div class="nav-bar">
+      <a class="nav-back" href="#" onclick="goTo('add-pharmacy');return false;" aria-label="Back">&#8249;</a>
+      <span class="nav-title">Add Pharmacy</span>
+    </div>
+    <div class="content">
+      <h1 class="page-title" style="font-size:20px; font-family:var(--font-body); font-weight:var(--font-weight-bold);">Add pharmacy manually</h1>
+      <p class="page-subtitle">Enter the details below. Your care team will verify this pharmacy before your prescription is sent.</p>
+
+      <div class="form-field">
+        <label class="form-label" for="m-name">Name</label>
+        <input class="form-input" type="text" id="m-name" placeholder="e.g. Walgreens">
+      </div>
+      <div class="form-field">
+        <label class="form-label" for="m-address">Address</label>
+        <input class="form-input" type="text" id="m-address" placeholder="e.g. 123 Happy Street">
+      </div>
+      <div class="form-field">
+        <label class="form-label" for="m-zip">ZIP</label>
+        <input class="form-input" type="text" id="m-zip" placeholder="e.g. 84020" inputmode="numeric">
+      </div>
+      <div class="form-field">
+        <label class="form-label" for="m-city">City</label>
+        <input class="form-input" type="text" id="m-city" placeholder="e.g. Draper">
+      </div>
+      <div class="form-field">
+        <label class="form-label" for="m-state">State</label>
+        <div class="form-select-wrap">
+          <select class="form-select" id="m-state">
+            <option value="">Select state</option>
+            <option>Alabama</option><option>Alaska</option><option>Arizona</option><option>Arkansas</option>
+            <option>California</option><option>Colorado</option><option>Connecticut</option><option>Delaware</option>
+            <option>Florida</option><option>Georgia</option><option>Hawaii</option><option>Idaho</option>
+            <option>Illinois</option><option>Indiana</option><option>Iowa</option><option>Kansas</option>
+            <option>Kentucky</option><option>Louisiana</option><option>Maine</option><option>Maryland</option>
+            <option>Massachusetts</option><option>Michigan</option><option>Minnesota</option><option>Mississippi</option>
+            <option>Missouri</option><option>Montana</option><option>Nebraska</option><option>Nevada</option>
+            <option>New Hampshire</option><option>New Jersey</option><option>New Mexico</option><option>New York</option>
+            <option>North Carolina</option><option>North Dakota</option><option>Ohio</option><option>Oklahoma</option>
+            <option>Oregon</option><option>Pennsylvania</option><option>Rhode Island</option><option>South Carolina</option>
+            <option>South Dakota</option><option>Tennessee</option><option>Texas</option><option selected>Utah</option>
+            <option>Vermont</option><option>Virginia</option><option>Washington</option><option>West Virginia</option>
+            <option>Wisconsin</option><option>Wyoming</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-field">
+        <label class="form-label" for="m-phone">Phone number</label>
+        <input class="form-input" type="tel" id="m-phone" placeholder="(801) 123-4567">
+      </div>
+
+      <div class="form-checkbox-row">
+        <input type="checkbox" id="m-mail-order">
+        <label for="m-mail-order">My pharmacy is online/mail-order</label>
+      </div>
+    </div>
+    <div class="sticky-footer">
+      <button class="btn btn-primary is-disabled" id="manual-save-btn" type="button">Save</button>
+    </div>
+  </div>
+
+  <!-- ============ VIEW 4: Confirm request ============ -->
+  <div class="view" id="view-confirm-request">
+    <div class="nav-bar">
+      <a class="nav-back" href="#" onclick="goTo('confirm-pharmacy');return false;" aria-label="Back">&#8249;</a>
+      <span class="nav-title">Request refill</span>
+    </div>
+    <div class="content">
+      <h1 class="page-title" style="font-size:22px; font-family:var(--font-body); font-weight:var(--font-weight-bold);">Confirm refill request</h1>
+      <p class="page-subtitle">Your request requires a clinical review before your prescription can be sent.</p>
+      <h2 class="section-title">What happens next</h2>
+      <div class="step-list">
+        <div class="step-item"><span class="step-badge">1</span><p class="step-copy"><strong>Submit request:</strong> Details sent to care team.</p></div>
+        <div class="step-item"><span class="step-badge">2</span><p class="step-copy"><strong>Clinical review:</strong> Your nurse coach checks symptoms, progress, and coverage.</p></div>
+        <div class="step-item"><span class="step-badge">3</span><p class="step-copy"><strong>Finalize in Chat:</strong> Your nurse coach messages you with next steps.</p></div>
+      </div>
+    </div>
+    <div class="sticky-footer">
+      <div class="btn-row">
+        <button class="btn btn-secondary" type="button" onclick="goTo('confirm-pharmacy')">Cancel</button>
+        <button class="btn btn-primary" id="submit-btn" type="button">Submit request</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ===========================================================
+// Mock pharmacy search results.
+// Turns whatever the tester types into plausible-looking
+// retail + mail-order pharmacy results, so user testing feels
+// real without needing a live pharmacy database.
+// ===========================================================
+
+const STREET_POOL = [
+  { address: '100 Summer Sunset Ave', city: 'Salt Lake City, Utah' },
+  { address: '482 Foothill Dr', city: 'Salt Lake City, Utah' },
+  { address: '1210 S State St', city: 'Salt Lake City, Utah' },
+  { address: '75 Canyon View Rd', city: 'Salt Lake City, Utah' },
+  { address: '640 W North Temple', city: 'Salt Lake City, Utah' },
+  { address: '2200 Parkway Blvd', city: 'Salt Lake City, Utah' }
+];
+
+// Known chain-specific naming so common searches feel authentic.
+const CHAIN_PATTERNS = {
+  cvs: { retail: 'CVS Pharmacy', mail: 'CVS Caremark Mail Order' },
+  walgreens: { retail: 'Walgreens', mail: 'Walgreens Mail Service Pharmacy' },
+  walmart: { retail: 'Walmart Pharmacy', mail: 'Walmart Pharmacy Mail Order' },
+  costco: { retail: 'Costco Warehouse Pharmacy', mail: 'Costco Online Pharmacy' },
+  'rite aid': { retail: 'Rite Aid Pharmacy', mail: 'Rite Aid Mail Order Pharmacy' },
+  kroger: { retail: 'Kroger Pharmacy', mail: 'Kroger Mail Order Pharmacy' },
+  safeway: { retail: 'Safeway Pharmacy', mail: 'Safeway Mail Order Pharmacy' },
+  publix: { retail: 'Publix Pharmacy', mail: 'Publix Mail Order Pharmacy' },
+  target: { retail: 'Target (CVS) Pharmacy', mail: 'CVS Caremark Mail Order' },
+  'express scripts': { retail: 'Express Scripts Pharmacy', mail: 'Express Scripts Mail Order' },
+  optum: { retail: 'Optum Store Pharmacy', mail: 'OptumRx Home Delivery' },
+  'sams club': { retail: "Sam's Club Pharmacy", mail: "Sam's Club Pharmacy Mail Order" },
+  "sam's club": { retail: "Sam's Club Pharmacy", mail: "Sam's Club Pharmacy Mail Order" }
+};
+
+function hashString(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) - hash + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash);
+}
+
+function titleCase(str) {
+  return str.replace(/\w\S*/g, (w) => w[0].toUpperCase() + w.slice(1).toLowerCase());
+}
+
+// Splits a free-text query like "Costco 84020" into { name, zip }.
+function parseQuery(rawQuery) {
+  const query = rawQuery.trim();
+  const zipMatch = query.match(/\b\d{5}\b/);
+  const zip = zipMatch ? zipMatch[0] : null;
+  const name = query.replace(/\b\d{5}\b/, '').trim();
+  return { name, zip };
+}
+
+function chainPatternFor(name) {
+  const key = name.toLowerCase().trim();
+  if (CHAIN_PATTERNS[key]) return CHAIN_PATTERNS[key];
+  // partial match, e.g. "cvs pharmacy" or "walgreens on main st"
+  const found = Object.keys(CHAIN_PATTERNS).find(k => key.includes(k));
+  return found ? CHAIN_PATTERNS[found] : null;
+}
+
+// Returns { retail: [...], mail: [...] } pharmacy result objects.
+function searchPharmacies(rawQuery) {
+  const { name, zip } = parseQuery(rawQuery);
+  if (!name) return { name: '', zip, retail: [], mail: [] };
+
+  const baseName = titleCase(name.replace(/\bpharmacy\b/gi, '').trim()) || titleCase(name);
+  const displayName = titleCase(name);
+  const pattern = chainPatternFor(name);
+  const retailLabel = pattern ? pattern.retail : `${baseName} Pharmacy`;
+  const mailLabel = pattern ? pattern.mail : `${baseName} Online Pharmacy`;
+
+  const seed = hashString(name.toLowerCase());
+  const zipDisplay = zip || '84020';
+
+  const streetsFor = (offset) => {
+    const idx = (seed + offset) % STREET_POOL.length;
+    return STREET_POOL[idx];
+  };
+
+  const phoneFor = (offset) => {
+    const exch = (seed + offset * 7) % 900 + 100;
+    const line = (seed + offset * 13) % 9000 + 1000;
+    return `(801) ${exch}-${line}`;
+  };
+
+  const loc1 = streetsFor(0);
+  const loc2 = streetsFor(1);
+  const loc3 = streetsFor(2);
+
+  const retail = [
+    {
+      id: `search-retail-1-${seed}`,
+      name: retailLabel,
+      address: loc1.address,
+      city: `${loc1.city} ${zipDisplay}`,
+      phone: phoneFor(1),
+      type: 'retail'
+    },
+    {
+      id: `search-retail-2-${seed}`,
+      name: retailLabel,
+      address: loc2.address,
+      city: `${loc2.city} ${zipDisplay}`,
+      phone: phoneFor(2),
+      type: 'retail'
+    }
+  ];
+
+  const mail = [
+    {
+      id: `search-mail-1-${seed}`,
+      name: mailLabel,
+      address: loc3.address,
+      city: `${loc3.city} ${zipDisplay}`,
+      phone: phoneFor(3),
+      type: 'mail'
+    }
+  ];
+
+  return { name: displayName, zip: zipDisplay, retail, mail };
+}
+
+</script>
+<script>
+// ===========================================================
+// In-memory state + router for this single-file preview build.
+// The real deliverable (index.html + friends) uses localStorage
+// and real URLs per screen instead of this in-page router.
+// ===========================================================
+const DEFAULT_STATE = {
+  savedPharmacies: [
+    { id: 'cvs-1', name: 'CVS Pharmacy', address: '100 Summer Sunset Ave', city: 'Salt Lake City, Utah 84020', phone: '(801)-321-4567', type: 'retail' },
+    { id: 'walgreens-1', name: 'Walgreens', address: '100 E 500 N Bluff Blvd', city: 'Salt Lake City, Utah 84020', phone: '(801) 567-0111', type: 'retail' }
+  ],
+  selectedPharmacyId: null,
+  requestedPharmacy: null,
+  requestSubmitted: false
+};
+let state = structuredClone(DEFAULT_STATE);
+
+function resetPreview() {
+  state = structuredClone(DEFAULT_STATE);
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('is-active'));
+  document.getElementById('view-overview').classList.add('is-active');
+  renderOverview();
+}
+
+function goTo(view) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('is-active'));
+  document.getElementById('view-' + view).classList.add('is-active');
+  document.getElementById('screen').scrollTop = 0;
+  if (view === 'confirm-pharmacy') renderConfirmPharmacy();
+  if (view === 'add-pharmacy') resetSearchView();
+  if (view === 'add-pharmacy-manual') resetManualForm();
+  if (view === 'overview') renderOverview();
+}
+
+function findPharmacy(id) {
+  return state.savedPharmacies.find(p => p.id === id) || null;
+}
+
+// ---------- Overview ----------
+function renderOverview() {
+  if (state.requestSubmitted && state.requestedPharmacy) {
+    document.getElementById('banner-slot').innerHTML = `
+      <div class="notification">
+        <div class="notification__icon">&#10003;</div>
+        <div class="notification__body">
+          <p class="notification__title">Request received</p>
+          <p class="notification__desc">Your care team is reviewing your progress. They&rsquo;ll reach out in Chat with next steps.</p>
+        </div>
+        <button class="notification__close" aria-label="Dismiss" onclick="this.closest('.notification').remove()">&#10005;</button>
+      </div>`;
+    document.getElementById('page-title').innerHTML = 'Prescriptions <span class="beta-tag">Beta</span>';
+    document.getElementById('page-subtitle').textContent = 'Requests open 25 days after your last refill. You must also complete the tasks below to qualify.';
+    document.getElementById('rx-status').textContent = 'Under review';
+    document.getElementById('rx-status').classList.add('status-review');
+    document.getElementById('rx-dose').textContent = '2.5 mg weekly';
+    const ph = state.requestedPharmacy;
+    document.getElementById('rx-lower').innerHTML = `
+      <p class="rx-meta-label">Refill requested</p>
+      <p class="rx-meta-value">Wed, May 16</p>
+      <div class="rx-pharmacy-block">
+        <p class="rx-meta-label">Pharmacy</p>
+        <p class="rx-meta-value is-link">${ph.name}</p>
+        <address>${ph.address}<br>${ph.city}<br>${ph.phone}</address>
+      </div>`;
+    const reqBlock = document.getElementById('requirements-block');
+    const copyEl = reqBlock.querySelector('.req-copy');
+    if (copyEl) copyEl.textContent = 'Nice work. Your care team is reviewing your request now. We\u2019ll notify you once it\u2019s approved.';
+    document.querySelectorAll('.req-tile-top').forEach(top => {
+      if (!top.querySelector('.req-badge')) top.insertAdjacentHTML('beforeend', '<span class="req-badge">+</span>');
+    });
+    document.querySelectorAll('.req-count').forEach(c => c.innerHTML = c.innerHTML.replace('weekly', 'monthly'));
+    document.getElementById('timing-copy').textContent = 'Requests typically take 1\u20133 business days to reach your pharmacy.';
+    const btn = document.getElementById('request-btn');
+    btn.textContent = 'Request refill';
+    btn.classList.add('is-disabled');
+    btn.disabled = true;
+  } else {
+    document.getElementById('banner-slot').innerHTML = '';
+    document.getElementById('page-title').textContent = 'Prescriptions';
+    document.getElementById('page-subtitle').textContent = 'Requests open 3 weeks after your last refill. You must also complete the tasks below to qualify.';
+    document.getElementById('rx-status').textContent = 'Upcoming';
+    document.getElementById('rx-status').classList.remove('status-review');
+    document.getElementById('rx-dose').textContent = '2.5 mg, injected weekly on Monday';
+    document.getElementById('rx-lower').innerHTML = `
+      <p class="rx-meta-label">Last sent to pharmacy</p>
+      <p class="rx-meta-value">Tue, Apr 21</p>
+      <p class="rx-meta-label" style="margin-top:12px;">Next refill: Tue, May 12</p>
+      <p class="rx-meta-value">Available now</p>`;
+    const reqBlock = document.getElementById('requirements-block');
+    const copyEl = reqBlock.querySelector('.req-copy');
+    if (copyEl) copyEl.textContent = 'Your requirements are complete. You can now request your refill.';
+    document.getElementById('timing-copy').textContent = 'Requests typically take 1\u20132 business days to reach your pharmacy.';
+    const btn = document.getElementById('request-btn');
+    btn.textContent = 'Request refill';
+    btn.classList.remove('is-disabled');
+    btn.disabled = false;
+  }
+}
+
+// ---------- Confirm pharmacy ----------
+function renderConfirmPharmacy() {
+  const list = document.getElementById('pharmacy-list');
+  list.innerHTML = '';
+  state.savedPharmacies.forEach(ph => {
+    const selected = state.selectedPharmacyId === ph.id;
+    const item = document.createElement('div');
+    item.className = 'pharmacy-item' + (selected ? ' is-selected' : '');
+    item.innerHTML = `
+      <div class="pharmacy-row">
+        <span class="radio ${selected ? 'is-selected' : ''}"></span>
+        <div style="flex:1">
+          <p class="pharmacy-name">${ph.name}</p>
+          <p class="pharmacy-address">${ph.address}<br>${ph.city}</p>
+          <p class="pharmacy-phone">${ph.phone}</p>
+        </div>
+      </div>
+      <div class="pharmacy-remove"><button type="button" data-remove="${ph.id}">Remove</button></div>`;
+    item.addEventListener('click', (e) => {
+      if (e.target.closest('[data-remove]')) return;
+      state.selectedPharmacyId = ph.id;
+      renderConfirmPharmacy();
+    });
+    item.querySelector('[data-remove]').addEventListener('click', (e) => {
+      e.stopPropagation();
+      state.savedPharmacies = state.savedPharmacies.filter(p => p.id !== ph.id);
+      if (state.selectedPharmacyId === ph.id) state.selectedPharmacyId = null;
+      renderConfirmPharmacy();
+    });
+    list.appendChild(item);
+  });
+  const confirmBtn = document.getElementById('confirm-btn');
+  confirmBtn.classList.toggle('is-disabled', !state.selectedPharmacyId);
+}
+document.getElementById('confirm-btn').addEventListener('click', () => {
+  if (!state.selectedPharmacyId) return;
+  state.requestedPharmacy = findPharmacy(state.selectedPharmacyId);
+  goTo('confirm-request');
+});
+
+// ---------- Add pharmacy (search) ----------
+let currentResults = { retail: [], mail: [], zip: '84020' };
+let activeFilter = 'all';
+let selectedResultId = null;
+
+function resetSearchView() {
+  currentResults = { retail: [], mail: [], zip: '84020' };
+  activeFilter = 'all';
+  selectedResultId = null;
+  document.getElementById('search-input').value = '';
+  document.getElementById('chip-row').style.display = 'none';
+  document.getElementById('manual-add').style.display = 'none';
+  document.querySelectorAll('#chip-row .chip').forEach(c => c.classList.toggle('is-active', c.dataset.filter === 'all'));
+  document.getElementById('results').innerHTML = '<p class="search-empty">Search by pharmacy name, address, or ZIP to see local retail and mail-order options.</p>';
+  updateSaveButton();
+}
+
+function runSearch() {
+  const query = document.getElementById('search-input').value.trim();
+  selectedResultId = null;
+  updateSaveButton();
+  const resultsEl = document.getElementById('results');
+  if (!query) {
+    currentResults = { retail: [], mail: [], zip: '84020' };
+    document.getElementById('chip-row').style.display = 'none';
+    document.getElementById('manual-add').style.display = 'none';
+    resultsEl.innerHTML = '<p class="search-empty">Search by pharmacy name, address, or ZIP to see local retail and mail-order options.</p>';
+    return;
+  }
+  currentResults = searchPharmacies(query);
+  document.getElementById('chip-row').style.display = 'flex';
+  document.getElementById('manual-add').style.display = 'block';
+  renderSearchResults();
+}
+
+function renderSearchResults() {
+  const showRetail = activeFilter === 'all' || activeFilter === 'retail';
+  const showMail = activeFilter === 'all' || activeFilter === 'mail';
+  let html = '';
+  if (showRetail && currentResults.retail.length) {
+    html += `<p class="results-heading">Results near ${currentResults.zip}</p>`;
+    html += `<div class="pharmacy-list">${currentResults.retail.map(renderResultItem).join('')}</div>`;
+  }
+  if (showMail && currentResults.mail.length) {
+    html += `<p class="results-heading section-gap">Mail-order</p>`;
+    html += `<div class="pharmacy-list">${currentResults.mail.map(renderResultItem).join('')}</div>`;
+  }
+  if (!html) html = '<p class="search-empty">No results in this category. Try &ldquo;All&rdquo; or a different search.</p>';
+  const resultsEl = document.getElementById('results');
+  resultsEl.innerHTML = html;
+  resultsEl.querySelectorAll('.pharmacy-item').forEach(item => {
+    item.addEventListener('click', () => {
+      selectedResultId = item.dataset.id;
+      renderSearchResults();
+      updateSaveButton();
+    });
+  });
+}
+
+function renderResultItem(ph) {
+  const selected = selectedResultId === ph.id;
+  return `
+    <div class="pharmacy-item ${selected ? 'is-selected' : ''}" data-id="${ph.id}">
+      <div class="pharmacy-row">
+        <span class="radio ${selected ? 'is-selected' : ''}"></span>
+        <div style="flex:1">
+          <p class="pharmacy-name">${ph.name}</p>
+          <p class="pharmacy-address">${ph.address}<br>${ph.city}</p>
+          <p class="pharmacy-phone">${ph.phone}</p>
+        </div>
+      </div>
+    </div>`;
+}
+
+function updateSaveButton() {
+  document.getElementById('save-btn').classList.toggle('is-disabled', !selectedResultId);
+}
+
+function currentSelectedPharmacy() {
+  return [...currentResults.retail, ...currentResults.mail].find(p => p.id === selectedResultId) || null;
+}
+
+document.getElementById('search-btn').addEventListener('click', runSearch);
+document.getElementById('search-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') runSearch(); });
+document.getElementById('chip-row').addEventListener('click', (e) => {
+  const chip = e.target.closest('.chip');
+  if (!chip) return;
+  activeFilter = chip.dataset.filter;
+  document.querySelectorAll('#chip-row .chip').forEach(c => c.classList.toggle('is-active', c === chip));
+  renderSearchResults();
+});
+document.getElementById('save-btn').addEventListener('click', () => {
+  const ph = currentSelectedPharmacy();
+  if (!ph) return;
+  state.savedPharmacies = [ph, ...state.savedPharmacies.filter(p => p.id !== ph.id)];
+  state.selectedPharmacyId = ph.id;
+  goTo('confirm-pharmacy');
+});
+
+// ---------- Add pharmacy manually ----------
+function resetManualForm() {
+  ['m-name','m-address','m-zip','m-city','m-phone'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('m-state').value = 'Utah';
+  document.getElementById('m-mail-order').checked = false;
+  updateManualSaveState();
+}
+function updateManualSaveState() {
+  document.getElementById('manual-save-btn').classList.toggle('is-disabled', !document.getElementById('m-name').value.trim());
+}
+document.getElementById('m-name').addEventListener('input', updateManualSaveState);
+document.getElementById('manual-save-btn').addEventListener('click', () => {
+  const name = document.getElementById('m-name').value.trim();
+  if (!name) return;
+  const address = document.getElementById('m-address').value.trim();
+  const zip = document.getElementById('m-zip').value.trim();
+  const city = document.getElementById('m-city').value.trim();
+  const stateVal = document.getElementById('m-state').value;
+  const phone = document.getElementById('m-phone').value.trim();
+  const isMailOrder = document.getElementById('m-mail-order').checked;
+  const cityLine = [city, stateVal].filter(Boolean).join(', ') + (zip ? ' ' + zip : '');
+  const newPharmacy = {
+    id: 'manual-' + Date.now(),
+    name: name,
+    address: address || 'Address not provided',
+    city: cityLine || 'City not provided',
+    phone: phone || 'Phone not provided',
+    type: isMailOrder ? 'mail' : 'retail'
+  };
+  state.savedPharmacies = [newPharmacy, ...state.savedPharmacies];
+  state.selectedPharmacyId = newPharmacy.id;
+  goTo('confirm-pharmacy');
+});
+
+// ---------- Confirm request ----------
+document.getElementById('submit-btn').addEventListener('click', () => {
+  state.requestSubmitted = true;
+  goTo('overview');
+});
+
+// Init
+renderOverview();
+</script>
+</body>
+</html>
