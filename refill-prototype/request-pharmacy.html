@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Request refill &ndash; Confirm pharmacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700&family=Neuton:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="screen">
+  <div class="nav-bar">
+    <a class="nav-back" href="index.html" aria-label="Back">&#8249;</a>
+    <span class="nav-title">Request refill</span>
+  </div>
+
+  <div class="content">
+    <h1 class="page-title" style="font-size:22px; font-family:var(--font-body); font-weight:var(--font-weight-bold);">Confirm pharmacy</h1>
+    <p class="page-subtitle">This is where your refill will be sent.</p>
+
+    <h2 class="section-title">Select refill pharmacy</h2>
+    <div class="pharmacy-list" id="pharmacy-list"></div>
+  </div>
+
+  <div class="sticky-footer">
+    <div class="btn-row">
+      <a class="btn btn-secondary" href="add-pharmacy.html">Add pharmacy</a>
+      <button class="btn btn-primary is-disabled" id="confirm-btn" type="button">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<script src="state.js"></script>
+<script>
+  const state = loadState();
+
+  function render() {
+    const list = document.getElementById('pharmacy-list');
+    list.innerHTML = '';
+
+    state.savedPharmacies.forEach(ph => {
+      const selected = state.selectedPharmacyId === ph.id;
+      const item = document.createElement('div');
+      item.className = 'pharmacy-item' + (selected ? ' is-selected' : '');
+      item.innerHTML = `
+        <div class="pharmacy-row">
+          <span class="radio ${selected ? 'is-selected' : ''}"></span>
+          <div style="flex:1">
+            <p class="pharmacy-name">${ph.name}</p>
+            <p class="pharmacy-address">${ph.address}<br>${ph.city}</p>
+            <p class="pharmacy-phone">${ph.phone}</p>
+          </div>
+        </div>
+        <div class="pharmacy-remove">
+          <button type="button" data-remove="${ph.id}">Remove</button>
+        </div>`;
+      item.addEventListener('click', (e) => {
+        if (e.target.closest('[data-remove]')) return;
+        state.selectedPharmacyId = ph.id;
+        saveState(state);
+        render();
+      });
+      item.querySelector('[data-remove]').addEventListener('click', (e) => {
+        e.stopPropagation();
+        state.savedPharmacies = state.savedPharmacies.filter(p => p.id !== ph.id);
+        if (state.selectedPharmacyId === ph.id) state.selectedPharmacyId = null;
+        saveState(state);
+        render();
+      });
+      list.appendChild(item);
+    });
+
+    const confirmBtn = document.getElementById('confirm-btn');
+    if (state.selectedPharmacyId) {
+      confirmBtn.classList.remove('is-disabled');
+    } else {
+      confirmBtn.classList.add('is-disabled');
+    }
+  }
+
+  document.getElementById('confirm-btn').addEventListener('click', () => {
+    if (!state.selectedPharmacyId) return;
+    state.requestedPharmacy = findPharmacy(state, state.selectedPharmacyId);
+    saveState(state);
+    window.location.href = 'confirm-request.html';
+  });
+
+  render();
+</script>
+</body>
+</html>

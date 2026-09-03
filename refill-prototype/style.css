@@ -1,0 +1,555 @@
+/* ===========================================================
+   Manage my refills — prototype styles
+   Built on the Substrate (Virta Health) design token set.
+   =========================================================== */
+
+:root {
+  --font-body: 'Figtree', system-ui, sans-serif;
+  /* Confirmed via Figma get_design_context on the real file (Rm557hnysr7s1lHeKH8kCV):
+     the display/decorative font is "Neuton" — a real Google Font — not "Neutron". */
+  --font-display: 'Neuton', Georgia, 'Times New Roman', serif;
+
+  --font-size-body-medium: 16px;
+  --font-size-body-small: 14px;
+  --line-height-body-medium: 24px;
+  --line-height-body-small: 20px;
+  --font-weight-bold: 700;
+  --font-weight-semibold: 600;
+  --font-weight-regular: 400;
+
+  --space-none: 0px;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+
+  --radius-b: 8px;
+  --radius-card: 12px;
+  --radius-pill: 999px;
+  --border-thin: 1px;
+
+  --color-background-primary: #ffffff;
+  --color-background-app: #ffffff;
+  --color-background-subtle: #f1f6fe;
+  --color-border: #d8dde6;
+  --color-text-primary: #0c1422;
+  --color-text-secondary: #627493;
+  --color-text-muted: #8a94a6;
+
+  --color-primary: #0563f0;
+  --color-primary-hover: #044fc4;
+  --color-primary-tint: #ccdefa;
+
+  --color-info: #0563f0;
+  --color-success: #1D9E75;
+  --color-success-tint: #e8f7f0;
+  --color-warning: #BA7517;
+  --color-error: #E24B4A;
+
+  --elevation-1: 0px 4px 24px 0px rgba(12, 20, 34, 0.12);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #e8ebf0;
+  font-family: var(--font-body);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Phone frame ----------
+   Fixed 390x844 canvas (iPhone 14/13/12 ratio) so every screen renders at
+   the exact same size regardless of the browser window or device it's
+   viewed in. Content scrolls inside the frame; the frame itself doesn't
+   resize. */
+body {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 24px 0;
+}
+
+.screen {
+  width: 390px;
+  height: 844px;
+  flex: none;
+  margin: 0 auto;
+  background: var(--color-background-primary);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  border-radius: 32px;
+  box-shadow: var(--elevation-1);
+  overflow: hidden;
+}
+
+/* ---------- Nav bar ---------- */
+.nav-bar {
+  display: flex;
+  align-items: center;
+  padding: 18px var(--space-lg) 12px;
+  position: relative;
+  flex-shrink: 0;
+}
+.nav-back {
+  width: 40px;
+  height: 40px;
+  margin: -8px 0 -8px -8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-primary);
+  text-decoration: none;
+  font-size: 20px;
+  border-radius: 50%;
+}
+.nav-back:hover { background: var(--color-background-subtle); }
+.nav-title {
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: center;
+  pointer-events: none;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.1px;
+}
+
+/* ---------- Content ---------- */
+.content {
+  flex: 1;
+  min-height: 0;
+  padding: 0 var(--space-lg) var(--space-xl);
+  overflow-y: auto;
+}
+
+h1.page-title {
+  font-family: var(--font-display);
+  font-size: 28px;
+  line-height: 36px;
+  font-weight: var(--font-weight-regular);
+  margin: var(--space-lg) 0 var(--space-sm);
+  letter-spacing: -0.2px;
+}
+p.page-subtitle {
+  font-size: var(--font-size-body-medium);
+  line-height: var(--line-height-body-medium);
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-xl);
+}
+h2.section-title {
+  font-size: var(--font-size-body-medium);
+  font-weight: var(--font-weight-semibold);
+  margin: 0 0 var(--space-md);
+}
+
+/* ---------- Illustration banner ---------- */
+.illustration {
+  width: 100%;
+  border-radius: var(--radius-card);
+  display: block;
+  margin-top: var(--space-sm);
+}
+
+/* ---------- Cards ---------- */
+.card {
+  border: var(--border-thin) solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-lg);
+}
+
+.rx-card .rx-row {
+  display: flex;
+  gap: var(--space-md);
+  align-items: flex-start;
+}
+.rx-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-card);
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.rx-icon img { width: 100%; height: 100%; display: block; object-fit: contain; }
+.rx-status {
+  font-size: var(--font-size-body-small);
+  color: var(--color-text-secondary);
+  margin: 0 0 2px;
+}
+.rx-status.status-review { color: var(--color-warning); font-weight: var(--font-weight-bold); }
+.rx-name {
+  font-family: var(--font-body);
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: var(--font-weight-semibold);
+  margin: 0 0 2px;
+}
+.rx-detail {
+  font-size: var(--font-size-body-small);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+.rx-divider {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: var(--space-md) 0;
+}
+.rx-meta-label {
+  font-size: var(--font-size-body-small);
+  color: var(--color-text-secondary);
+  margin: 0 0 2px;
+}
+.rx-meta-value {
+  font-size: var(--font-size-body-small);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+.rx-meta-value.is-link { color: var(--color-primary); }
+.rx-pharmacy-block { margin-top: var(--space-md); }
+.rx-pharmacy-block address {
+  font-style: normal;
+  font-size: var(--font-size-body-small);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+/* ---------- Requirement tiles ---------- */
+.req-title {
+  font-weight: var(--font-weight-semibold);
+  margin: 0 0 var(--space-sm);
+}
+.req-copy {
+  font-size: var(--font-size-body-small);
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-lg);
+}
+.req-copy.is-complete { color: var(--color-text-primary); }
+.req-grid {
+  display: flex;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+.req-tile {
+  flex: 1;
+  border: var(--border-thin) solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-lg);
+}
+.req-tile-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 28px;
+}
+.req-tile-top span { font-weight: var(--font-weight-semibold); font-size: var(--font-size-body-small); line-height: 1.35; }
+.req-badge {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--color-primary);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0;
+}
+.req-progress {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.req-count { font-size: var(--font-size-body-small); color: var(--color-text-secondary); }
+.req-ring {
+  width: 34px; height: 34px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+}
+.req-ring img { width: 16px; height: 16px; display: block; }
+.req-ring.gold { background: #fdf3d9; border: 2px solid #e8b33d; }
+.req-ring.orange { background: #fde8d9; border: 2px solid #e07a2f; }
+
+.info-box {
+  background: var(--color-background-subtle);
+  border-radius: var(--radius-card);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+.info-box strong { display: block; margin-bottom: 4px; font-size: var(--font-size-body-medium); }
+.info-box p { margin: 0; font-size: var(--font-size-body-small); color: var(--color-text-secondary); }
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 14px 24px;
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: var(--font-weight-semibold);
+  border-radius: var(--radius-b);
+  border: var(--border-thin) solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+}
+.btn-primary { background: var(--color-primary); color: #fff; }
+.btn-primary:hover:not(:disabled) { background: var(--color-primary-hover); }
+.btn-primary:disabled, .btn-primary.is-disabled {
+  background: #e2e8f0; color: #a0aab8; cursor: not-allowed;
+  pointer-events: none;
+}
+.btn-secondary { background: #fff; color: var(--color-primary); border-color: var(--color-primary); }
+.btn-secondary:hover { background: var(--color-primary-tint); }
+.btn-row { display: flex; gap: var(--space-md); }
+.btn-row .btn { flex: 1; padding-left: var(--space-md); padding-right: var(--space-md); font-size: var(--font-size-body-medium); line-height: var(--line-height-body-medium); white-space: nowrap; }
+
+.sticky-footer {
+  padding: var(--space-lg);
+  border-top: 1px solid var(--color-border);
+  flex-shrink: 0;
+  background: #fff;
+}
+
+/* ---------- Pharmacy list items ---------- */
+.pharmacy-list { display: flex; flex-direction: column; gap: var(--space-md); }
+.pharmacy-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-lg);
+  background: #fff;
+  cursor: pointer;
+  font-family: var(--font-body);
+}
+.pharmacy-item.is-selected { border-color: var(--color-primary); }
+.pharmacy-row { display: flex; gap: var(--space-md); align-items: flex-start; }
+.radio {
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 1.5px solid #c4cad4;
+  flex-shrink: 0; margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+}
+.radio.is-selected { border-color: var(--color-primary); }
+.radio.is-selected::after {
+  content: ''; width: 11px; height: 11px; border-radius: 50%; background: var(--color-primary);
+}
+.pharmacy-name { font-weight: var(--font-weight-semibold); font-size: var(--font-size-body-medium); margin: 0 0 4px; }
+.pharmacy-address { font-size: var(--font-size-body-small); color: var(--color-text-secondary); margin: 0; line-height: 1.5; }
+.pharmacy-phone { font-size: var(--font-size-body-small); color: var(--color-text-secondary); margin: var(--space-sm) 0 0; }
+.pharmacy-remove {
+  margin-top: var(--space-md);
+  text-align: right;
+}
+.pharmacy-remove button {
+  background: none; border: none; color: var(--color-error);
+  font-size: var(--font-size-body-small); font-weight: var(--font-weight-bold);
+  cursor: pointer; padding: 0; font-family: var(--font-body);
+}
+
+/* ---------- Search ---------- */
+.search-box {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid var(--color-primary);
+  border-radius: var(--radius-b);
+  padding: 4px 4px 4px var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+.search-box input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-family: var(--font-body);
+  font-size: var(--font-size-body-medium);
+  padding: 10px 0;
+  background: transparent;
+  color: var(--color-text-primary);
+}
+.search-box input::placeholder { color: var(--color-text-muted); }
+.search-submit {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--color-primary); border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0;
+}
+.search-submit img { width: 18px; height: 18px; filter: brightness(0) invert(1); }
+
+.chip-row { display: flex; gap: var(--space-sm); margin-bottom: var(--space-xl); flex-wrap: wrap; }
+.chip {
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  padding: 8px 18px;
+  font-size: var(--font-size-body-small);
+  font-weight: var(--font-weight-semibold);
+  background: #fff;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  font-family: var(--font-body);
+}
+.chip.is-active { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
+
+.results-heading {
+  font-size: var(--font-size-body-small);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-md);
+}
+.results-heading.section-gap { margin-top: var(--space-xl); }
+
+.search-empty {
+  text-align: center;
+  padding: 60px var(--space-lg) 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body-small);
+}
+
+.manual-add {
+  text-align: center;
+  padding: var(--space-xl) 0 var(--space-md);
+  border-top: 1px solid var(--color-border);
+  margin-top: var(--space-lg);
+}
+.manual-add p { font-size: var(--font-size-body-small); color: var(--color-text-secondary); margin: 0 0 6px; }
+.manual-add a {
+  color: var(--color-primary); font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-body-small); text-decoration: none;
+  background: none; border: none; cursor: pointer; font-family: var(--font-body);
+}
+
+/* ---------- Manual pharmacy entry form ---------- */
+.form-field { margin-bottom: var(--space-xl); }
+.form-label {
+  display: block;
+  font-size: var(--font-size-body-medium);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-sm);
+}
+.form-input {
+  width: 100%;
+  padding: 12px 14px;
+  font-family: var(--font-body);
+  font-size: var(--font-size-body-medium);
+  color: var(--color-text-primary);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-b);
+  background: #fff;
+  box-sizing: border-box;
+}
+.form-input::placeholder { color: var(--color-text-muted); }
+.form-input:focus { outline: none; border-color: var(--color-primary); }
+.form-select-wrap { position: relative; }
+.form-select {
+  width: 100%;
+  padding: 12px 40px 12px 14px;
+  font-family: var(--font-body);
+  font-size: var(--font-size-body-medium);
+  color: var(--color-text-primary);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-b);
+  background: #fff;
+  box-sizing: border-box;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.form-select:focus { outline: none; border-color: var(--color-primary); }
+.form-select-wrap::after {
+  content: '';
+  position: absolute;
+  right: 16px; top: 50%;
+  width: 9px; height: 9px;
+  border-right: 1.5px solid var(--color-text-secondary);
+  border-bottom: 1.5px solid var(--color-text-secondary);
+  transform: translateY(-65%) rotate(45deg);
+  pointer-events: none;
+}
+.form-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-lg);
+}
+.form-checkbox-row input[type="checkbox"] {
+  width: 20px; height: 20px; flex-shrink: 0;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+.form-checkbox-row label { font-size: var(--font-size-body-medium); cursor: pointer; }
+
+/* ---------- Numbered steps (confirm request) ---------- */
+.step-list { display: flex; flex-direction: column; gap: var(--space-lg); margin-bottom: var(--space-xl); }
+.step-item { display: flex; align-items: flex-start; gap: var(--space-md); }
+.step-badge {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: #fdf3d9; color: #8a5c10;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: var(--font-weight-bold); flex-shrink: 0;
+}
+.step-copy { font-size: var(--font-size-body-medium); line-height: var(--line-height-body-medium); margin: 0; }
+.step-copy strong { font-weight: var(--font-weight-bold); }
+
+.spacer { flex: 1; }
+
+/* ---------- Notification banner ---------- */
+.notification {
+  display: flex; align-items: flex-start; gap: 8px;
+  background: #ffffff; border: 1px solid var(--color-border);
+  border-radius: 8px; padding: 12px 16px;
+  box-shadow: var(--elevation-1);
+  margin: var(--space-lg) var(--space-lg) 0;
+}
+.notification__icon {
+  width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; color: #fff; margin-top: 2px;
+  background: var(--color-success);
+}
+.notification__body { flex: 1; }
+.notification__title { font-size: 16px; font-weight: 700; line-height: 24px; color: #0c1422; margin: 0; }
+.notification__desc  { font-size: 14px; font-weight: 400; line-height: 20px; color: #4a5568; margin: 2px 0 0; }
+.notification__close {
+  background: none; border: none; cursor: pointer;
+  color: #4a5568; width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 4px; flex-shrink: 0; font-size: 14px;
+}
+.notification__close:hover { background: #f1f5f9; }
+
+.beta-tag {
+  display: inline-block;
+  background: var(--color-primary-tint);
+  color: var(--color-primary);
+  font-size: 12px;
+  font-weight: var(--font-weight-bold);
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.proto-reset {
+  text-align: center;
+  padding: var(--space-lg) 0 0;
+}
+.proto-reset button {
+  background: none; border: none; color: var(--color-text-muted);
+  font-size: 12px; text-decoration: underline; cursor: pointer; font-family: var(--font-body);
+}
+
+/* ===========================================================
+   Typography note: the decorative/display font is Neuton, a
+   real Google Font (confirmed via Figma get_design_context on
+   the source file). It's loaded directly via the <link> tag in
+   each HTML file's <head> — no self-hosting needed.
+   =========================================================== */
